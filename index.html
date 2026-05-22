@@ -375,7 +375,8 @@
             // 更新按钮状态
             document.querySelectorAll('.agent-btn').forEach(btn => {
                 btn.classList.remove('active');
-            document.querySelector('.agent-btn[data-id="' + agentId + '"]').classList.add('active');
+        });
+        document.querySelector('.agent-btn[data-id="' + agentId + '"]').classList.add('active');
 
             // 清空聊天记录
             chatHistory = [];
