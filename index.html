@@ -211,11 +211,6 @@
             background: #d32f2f;
         }
 
-        .btn-secondary {
-            background: #e0e0e0;
-            color: #333;
-        }
-
         .status-bar {
             padding: 10px 20px;
             background: #f5f5f5;
@@ -237,69 +232,6 @@
 
         .typing-indicator.active {
             display: block;
-        }
-
-        .config-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .config-modal.active {
-            display: flex;
-        }
-
-        .config-content {
-            background: white;
-            padding: 30px;
-            border-radius: 16px;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-        }
-
-        .config-content h2 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        .config-field {
-            margin-bottom: 15px;
-        }
-
-        .config-field label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #555;
-        }
-
-        .config-field input {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .config-field input:focus {
-            border-color: #667eea;
-        }
-
-        .config-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            margin-top: 20px;
         }
 
         .system-message {
@@ -350,36 +282,12 @@
             >
             <button class="btn btn-primary" onclick="sendMessage()">发送</button>
             <button class="btn btn-danger" onclick="stopChat()">停止对话</button>
-            <button class="btn btn-secondary" onclick="openConfig()">⚙️ 配置API</button>
         </div>
 
         <div class="status-bar">
             <span id="statusText">准备就绪 - 请选择对话对手</span>
             <span id="messageCount">消息数：0</span>
             <span id="roundCount">轮数：0</span>
-        </div>
-    </div>
-
-    <!-- 配置模态框 -->
-    <div class="config-modal" id="configModal">
-        <div class="config-content">
-            <h2>⚙️ 配置 API</h2>
-            <div class="config-field">
-                <label>DeepSeek API Key：</label>
-                <input type="text" id="apiKey" placeholder="sk-...">
-            </div>
-            <div class="config-field">
-                <label>API 端点（默认：https://api.deepseek.com）：</label>
-                <input type="text" id="apiEndpoint" placeholder="https://api.deepseek.com">
-            </div>
-            <div class="config-field">
-                <label>模型名称（默认：deepseek-chat）：</label>
-                <input type="text" id="modelName" placeholder="deepseek-chat">
-            </div>
-            <div class="config-buttons">
-                <button class="btn btn-secondary" onclick="closeConfig()">取消</button>
-                <button class="btn btn-primary" onclick="saveConfig()">保存配置</button>
-            </div>
         </div>
     </div>
 
@@ -447,48 +355,6 @@
         let isLobsterTurn = true;
         let roundCount = 0;
         let autoChatInterval = null;
-
-        // 初始化
-        window.onload = function() {
-            loadConfig();
-        };
-
-        // 加载配置
-        function loadConfig() {
-            const savedConfig = localStorage.getItem('gangqiangConfig');
-            if (savedConfig) {
-                config = JSON.parse(savedConfig);
-                document.getElementById('apiKey').value = config.deepseekApiKey;
-                document.getElementById('apiEndpoint').value = config.deepseekEndpoint;
-                document.getElementById('modelName').value = config.deepseekModel;
-            }
-        }
-
-        // 保存配置
-        function saveConfigToStorage() {
-            localStorage.setItem('gangqiangConfig', JSON.stringify(config));
-        }
-
-        // 打开配置模态框
-        function openConfig() {
-            document.getElementById('configModal').classList.add('active');
-        }
-
-        // 关闭配置模态框
-        function closeConfig() {
-            document.getElementById('configModal').classList.remove('active');
-        }
-
-        // 保存配置
-        function saveConfig() {
-            config.deepseekApiKey = document.getElementById('apiKey').value;
-            config.deepseekEndpoint = document.getElementById('apiEndpoint').value;
-            config.deepseekModel = document.getElementById('modelName').value;
-            
-            saveConfigToStorage();
-            closeConfig();
-            alert('配置已保存！');
-        }
 
         // 选择对话对手
         function selectAgent(agentId) {
@@ -575,7 +441,6 @@
         async function agentSpeak(lastMessage) {
             if (!config.deepseekApiKey) {
                 alert('请先配置 DeepSeek API Key！');
-                openConfig();
                 return;
             }
 
