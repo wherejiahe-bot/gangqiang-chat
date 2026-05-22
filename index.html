@@ -631,6 +631,11 @@
                 addMessage(currentAgent.id, `${currentAgent.avatar} ${currentAgent.name}`, reply);
                 isLobsterTurn = true;
 
+                // 等待 2 秒后让龙虾回复
+                setTimeout(() => {
+                    lobsterSpeak(reply);
+                }, 2000);
+
             } catch (error) {
                 hideTyping();
                 addMessage(currentAgent.id, `${currentAgent.avatar} ${currentAgent.name}`, `（调用 DeepSeek API 失败：${error.message}）`);
