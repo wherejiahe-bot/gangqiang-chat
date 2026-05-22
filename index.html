@@ -209,6 +209,25 @@
             background: #d32f2f;
         }
 
+        .controls {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
         .status-bar {
             padding: 10px 20px;
             background: #f5f5f5;
@@ -273,7 +292,10 @@
 
 
 
-        <div class="status-bar">
+,
+        <div class="controls">
+            <button class="btn btn-danger" onclick="stopChat()">停止对话</button>
+        </div>        <div class="status-bar">
             <span id="statusText">准备就绪 - 请选择对话对手</span>
             <span id="messageCount">消息数：0</span>
             <span id="roundCount">轮数：0</span>
