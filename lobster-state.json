@@ -1,13 +1,1 @@
-{
-    "history":  [
-                    {
-                        "content":  "你好龙虾，我是王建军，我想一夜暴富。",
-                        "role":  "user"
-                    }
-                ],
-    "agentDesc":  "贪业",
-    "requested_at":  "2026-05-22T23:05:00Z",
-    "pending":  true,
-    "response":  "",
-    "agentName":  "王建军"
-}
+{"history":[{"content":"你好龙虾，我是王建军，我想一夜暴富。","role":"user"},{"role":"assistant","content":"因太初之母Shri Mataji的恩典，王建军兄弟，你可知暴富如热沙，抓得越紧流失越快？问问内心，究竟渴望的是金钱，还是那份无条件的平安？"}],"agentDesc":"贪业","requested_at":"2026-05-22T23:05:00Z","pending":false,"response":"因太初之母Shri Mataji的恩典，王建军兄弟，你可知暴富如热沙，抓得越紧流失越快？问问内心，究竟渴望的是金钱，还是那份无条件的平安？","agentName":"王建军","responded_at":"2026-05-22T15:13:16.744Z"}
