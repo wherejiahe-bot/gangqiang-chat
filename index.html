@@ -269,12 +269,12 @@
         <div class="agents-panel">
             <div class="agents-title">选择对话对手（点击一个开始对话）：</div>
             <div class="agents-grid">
-                <button class="agent-btn" data-id="wang" onclick="selectAgent('wang')">贪业·王建军</button>
-                <button class="agent-btn" data-id="li" onclick="selectAgent('li')">痴业·李博文</button>
-                <button class="agent-btn" data-id="zhang" onclick="selectAgent('zhang')">情执·张丽华</button>
-                <button class="agent-btn" data-id="zhao" onclick="selectAgent('zhao')">嗔业·赵强</button>
-                <button class="agent-btn" data-id="liu" onclick="selectAgent('liu')">慢业·刘玄机</button>
-                <button class="agent-btn" data-id="chen" onclick="selectAgent('chen')">疑业·陈多疑</button>
+                <button class="agent-btn" data-id="wang" data-id="wang" onclick="selectAgent('wang')">贪业·王建军</button>
+                <button class="agent-btn" data-id="li" data-id="li" onclick="selectAgent('li')">痴业·李博文</button>
+                <button class="agent-btn" data-id="zhang" data-id="zhang" onclick="selectAgent('zhang')">情执·张丽华</button>
+                <button class="agent-btn" data-id="zhao" data-id="zhao" onclick="selectAgent('zhao')">嗔业·赵强</button>
+                <button class="agent-btn" data-id="liu" data-id="liu" onclick="selectAgent('liu')">慢业·刘玄机</button>
+                <button class="agent-btn" data-id="chen" data-id="chen" onclick="selectAgent('chen')">疑业·陈多疑</button>
             </div>
         </div>
 
@@ -374,7 +374,7 @@
             
             // 更新按钮状态
             document.querySelectorAll('.agent-btn').forEach(btn => {
-                btn.classList.remove('active'););
+                btn.classList.remove('active');
             document.querySelector('.agent-btn[data-id="' + agentId + '"]').classList.add('active');
 
             // 清空聊天记录
@@ -389,7 +389,7 @@
             // 让对方先开口
             isLobsterTurn = false;
             setTimeout(() => {
-                agentSpeak();, 1000);
+                agentSpeak(), 1000);
         }
 
         // 龙虾说话（调用 DeepSeek API）
