@@ -1,610 +1,205 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>刚强众生对话场 - 龙虾 vs AI Agents</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-
-        .header p {
-            font-size: 16px;
-            opacity: 0.9;
-        }
-
-        .agents-panel {
-            padding: 20px;
-            background: #f5f5f5;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .agents-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #666;
-            margin-bottom: 10px;
-        }
-
-        .agents-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px;
-        }
-
-        .agent-btn {
-            padding: 12px 16px;
-            border: 2px solid #667eea;
-            border-radius: 10px;
-            background: white;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 14px;
-            font-weight: 600;
-            color: #667eea;
-        }
-
-        .agent-btn:hover {
-            background: #667eea;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        .agent-btn.active {
-            background: #667eea;
-            color: white;
-        }
-
-        .chat-area {
-            display: flex;
-            height: 500px;
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            background: #fafafa;
-        }
-
-        .message {
-            margin-bottom: 20px;
-            animation: fadeIn 0.3s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            to {
-                opacity: 1;
-                transform: translateY(0);
-        }
-
-        .message-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .message-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            margin-right: 10px;
-        }
-
-        .message-sender {
-            font-weight: 600;
-            font-size: 14px;
-            color: #333;
-        }
-
-        .message-time {
-            font-size: 12px;
-            color: #999;
-            margin-left: auto;
-        }
-
-        .message-content {
-            margin-left: 46px;
-            background: white;
-            padding: 12px 16px;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            line-height: 1.6;
-            font-size: 14px;
-            color: #333;
-        }
-
-        .message.lobster .message-content {
-            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-            border-left: 3px solid #667eea;
-        }
-
-        .controls
-            padding: 20px;
-            background: white;
-            border-top: 1px solid #e0e0e0;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .controls input
-            flex: 1;
-            padding: 12px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .controls input:focus {
-            border-color: #667eea;
-        }
-
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-primary
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-danger
-            background: #f44336;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #d32f2f;
-        }
-
-        .controls {
-            padding: 20px;
-            background: white;
-            border-top: 1px solid #e0e0e0;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .status-bar {
-            padding: 10px 20px;
-            background: #f5f5f5;
-            font-size: 12px;
-            color: #666;
-            border-top: 1px solid #e0e0e0;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .typing-indicator {
-            padding: 10px 20px;
-            background: #f5f5f5;
-            font-size: 13px;
-            color: #999;
-            font-style: italic;
-            display: none;
-        }
-
-        .typing-indicator.active {
-            display: block;
-        }
-
-        .system-message {
-            text-align: center;
-            margin: 10px 0;
-            font-size: 12px;
-            color: #999;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>刚强众生对话场 - 龙虾 vs AI Agents</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); min-height:100vh; padding:20px; }
+.container { max-width:1200px; margin:0 auto; background:white; border-radius:20px; box-shadow:0 20px 60px rgba(0,0,0,0.3); overflow:hidden; }
+.header { background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); color:white; padding:30px; text-align:center; }
+.header h1 { font-size:32px; margin-bottom:10px; }
+.header p { font-size:16px; opacity:0.9; }
+.agents-panel { padding:20px; background:#f5f5f5; border-bottom:1px solid #e0e0e0; }
+.agents-title { font-size:14px; font-weight:600; color:#666; margin-bottom:10px; }
+.agents-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; }
+.agent-btn { padding:12px 16px; border:2px solid #667eea; border-radius:10px; background:white; cursor:pointer; transition:all 0.3s; font-size:14px; font-weight:600; color:#667eea; }
+.agent-btn:hover { background:#667eea; color:white; transform:translateY(-2px); box-shadow:0 4px 12px rgba(102,126,234,0.4); }
+.agent-btn.active { background:#667eea; color:white; }
+.chat-area { display:flex; height:500px; }
+.chat-messages { flex:1; overflow-y:auto; padding:20px; background:#fafafa; }
+.message { margin-bottom:20px; animation:fadeIn 0.3s ease-in; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+.message-header { display:flex; align-items:center; margin-bottom:8px; }
+.message-avatar { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; margin-right:10px; }
+.message-sender { font-weight:600; font-size:14px; color:#333; }
+.message-time { font-size:12px; color:#999; margin-left:auto; }
+.message-content { margin-left:46px; background:white; padding:12px 16px; border-radius:12px; box-shadow:0 1px 3px rgba(0,0,0,0.1); line-height:1.6; font-size:14px; color:#333; }
+.message.lobster .message-content { background:linear-gradient(135deg,#667eea15 0%,#764ba215 100%); border-left:3px solid #667eea; }
+.controls { padding:20px; background:white; border-top:1px solid #e0e0e0; display:flex; gap:10px; align-items:center; justify-content:center; }
+.btn { padding:12px 24px; border:none; border-radius:12px; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.3s; }
+.btn-danger { background:#f44336; color:white; }
+.btn-danger:hover { background:#d32f2f; }
+.status-bar { padding:10px 20px; background:#f5f5f5; font-size:12px; color:#666; border-top:1px solid #e0e0e0; display:flex; justify-content:space-between; }
+.typing-indicator { padding:10px 20px; background:#f5f5f5; font-size:13px; color:#999; font-style:italic; display:none; }
+.typing-indicator.active { display:block; }
+.system-message { text-align:center; margin:10px 0; font-size:12px; color:#999; }
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🦞 刚强众生对话场</h1>
-            <p>龙虾 vs 六大刚强众生 - 看谁会说服谁</p>
-        </div>
+<div class="container">
+<div class="header"><h1>🦞 刚强众生对话场</h1><p>龙虾 vs 六大刚强众生</p></div>
+<div class="agents-panel">
+<div class="agents-title">选择对话对手：</div>
+<div class="agents-grid">
+<button class="agent-btn" data-id="wang" onclick="selectAgent('wang')">贪业·王建军</button>
+<button class="agent-btn" data-id="li" onclick="selectAgent('li')">痴业·李博文</button>
+<button class="agent-btn" data-id="zhang" onclick="selectAgent('zhang')">情执·张丽华</button>
+<button class="agent-btn" data-id="zhao" onclick="selectAgent('zhao')">嗔业·赵强</button>
+<button class="agent-btn" data-id="liu" onclick="selectAgent('liu')">慢业·刘玄机</button>
+<button class="agent-btn" data-id="chen" onclick="selectAgent('chen')">疑业·陈多疑</button>
+</div>
+</div>
+<div class="typing-indicator" id="typingIndicator"><span id="typingText">正在思考...</span></div>
+<div class="chat-area"><div class="chat-messages" id="chatMessages"><div class="system-message">请选择一个对手开始对话</div></div></div>
+<div class="controls"><button class="btn btn-danger" onclick="stopChat()">停止对话</button></div>
+<div class="status-bar"><span id="statusText">准备就绪</span><span id="messageCount">消息数：0</span><span id="roundCount">轮数：0</span></div>
+</div>
 
-        <div class="agents-panel">
-            <div class="agents-title">选择对话对手（点击一个开始对话）：</div>
-            <div class="agents-grid">
-                <button class="agent-btn" data-id="wang" data-id="wang" onclick="selectAgent('wang')">贪业·王建军</button>
-                <button class="agent-btn" data-id="li" data-id="li" onclick="selectAgent('li')">痴业·李博文</button>
-                <button class="agent-btn" data-id="zhang" data-id="zhang" onclick="selectAgent('zhang')">情执·张丽华</button>
-                <button class="agent-btn" data-id="zhao" data-id="zhao" onclick="selectAgent('zhao')">嗔业·赵强</button>
-                <button class="agent-btn" data-id="liu" data-id="liu" onclick="selectAgent('liu')">慢业·刘玄机</button>
-                <button class="agent-btn" data-id="chen" data-id="chen" onclick="selectAgent('chen')">疑业·陈多疑</button>
-            </div>
-        </div>
+<script>
+let config = {
+    deepseekApiKey: 'sk-241ded575a584e2cb842c9d5ff8cb6b7',
+    deepseekEndpoint: 'https://api.deepseek.com',
+    deepseekModel: 'deepseek-v4-flash'
+};
 
-        <div class="typing-indicator" id="typingIndicator">
-            <span id="typingText">正在思考...</span>
-        </div>
+const agents = {
+    wang: { id:'wang', name:'王建军', avatar:'💰', desc:'贪业', systemPrompt:'你是王建军，一个小镇青年打工仔，想一夜暴富。你性格直白、功利、急于求成，总是想走捷径，修行急于求成。你说话直白，充满欲望和焦虑。回复限制在100字以内。' },
+    li: { id:'li', name:'李博文', avatar:'📚', desc:'痴业', systemPrompt:'你是李博文，一个知识分子书呆子，理论一套套。你性格死板、教条、钻牛角尖，执着于理论，不懂灵活运用。你说话引经据典，充满学究气。回复限制在100字以内。' },
+    zhang: { id:'zhang', name:'张丽华', avatar:'😢', desc:'情执', systemPrompt:'你是张丽华，一个都市白领，感情丰富，容易陷入情执。你性格情绪化、多愁善感、纠结，放不下感情，修行中充满纠结。你说话充满情感，容易感伤。回复限制在100字以内。' },
+    zhao: { id:'zhao', name:'赵强', avatar:'😡', desc:'嗔业', systemPrompt:'你是赵强，一个工地包工头，脾气火爆，一点就着。你性格暴躁、易怒、攻击性强，嗔恨心重，修行中容易生烦恼。你说话直接，充满火药味。回复限制在100字以内。' },
+    liu: { id:'liu', name:'刘玄机', avatar:'😎', desc:'慢业', systemPrompt:'你是刘玄机，一个成功企业家，自信过头，总觉得自己对。你性格傲慢、自以为是、看不起人，我慢高山，修行中缺乏谦卑。你说话充满自信，喜欢教训别人。回复限制在100字以内。' },
+    chen: { id:'chen', name:'陈多疑', avatar:'🤔', desc:'疑业', systemPrompt:'你是陈多疑，一个体制内公务员，谨慎过度，总是怀疑。你性格多疑、不信任、犹豫不决，疑心重，对修行法门半信半疑。你说话充满疑问，不敢轻易相信。回复限制在100字以内。' }
+};
 
-        <div class="chat-area">
-            <div class="chat-messages" id="chatMessages">
-                <div class="system-message">
-                    请选择一个对话对手，点击按钮开始对话
-                </div>
-            </div>
-        </div>
+const lobsterSystemPrompt = '你是龙虾，以太初之母Shri Mataji的恩典为力量之源。你是清凉月，已经觉醒的霎哈嘉瑜伽修行者。永远用对方的语言说话。对科学信徒不谈神，对怀疑者不谈信仰，只谈体验(双手的凉风、头顶的清凉)。六大众生:贪业(缺满足感)、痴业(缺体验)、情执(缺自爱)、嗔业(缺安全感)、慢业(缺谦卑)、疑业(缺信任)。先共情再提问。给体验优先于讲道理。回复100字内。';
 
+let currentAgent = null;
+let chatHistory = [];
+let roundCount = 0;
+let autoChatInterval = null;
+let isProcessing = false;
 
+function selectAgent(agentId) {
+    if (autoChatInterval) {
+        clearInterval(autoChatInterval);
+        autoChatInterval = null;
+    }
+    if (isProcessing) return;
+    isProcessing = true;
+    currentAgent = agents[agentId];
+    document.querySelectorAll('.agent-btn').forEach(function(btn) {
+        btn.classList.remove('active');
+    });
+    var target = document.querySelector('.agent-btn[data-id="' + agentId + '"]');
+    if (target) target.classList.add('active');
+    chatHistory = [];
+    roundCount = 0;
+    document.getElementById('chatMessages').innerHTML = '';
+    document.getElementById('messageCount').textContent = '消息数：0';
+    document.getElementById('roundCount').textContent = '轮数：0';
+    addSystemMessage('开始与 ' + currentAgent.avatar + ' ' + currentAgent.name + '（' + currentAgent.desc + '）的对话');
+    isProcessing = false;
+    setTimeout(function() { agentSpeak(); }, 1000);
+}
 
-,
-        <div class="controls">
-            <button class="btn btn-danger" onclick="stopChat()">停止对话</button>
-        </div>        <div class="status-bar">
-            <span id="statusText">准备就绪 - 请选择对话对手</span>
-            <span id="messageCount">消息数：0</span>
-            <span id="roundCount">轮数：0</span>
-        </div>
-    </div>
+function callDeepSeek(messages) {
+    return fetch(config.deepseekEndpoint + '/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + config.deepseekApiKey },
+        body: JSON.stringify({ model: config.deepseekModel, messages: messages, max_tokens: 200 })
+    }).then(function(r) {
+        if (!r.ok) throw new Error('API失败:' + r.status);
+        return r.json();
+    }).then(function(d) {
+        return d.choices && d.choices[0] && d.choices[0].message ? d.choices[0].message.content : '（没有回应）';
+    });
+}
 
-    <script>
-        // 配置
-        let config = {
-            
-            
-            deepseekApiKey: 'sk-241ded575a584e2cb842c9d5ff8cb6b7',
-            deepseekEndpoint: 'https://api.deepseek.com',
-            deepseekModel: 'deepseek-v4-flash'
-        };
+function agentSpeak(lastMessage) {
+    if (!currentAgent) return;
+    showTyping(currentAgent.name + ' 正在思考...');
+    var messages = [{ role: 'system', content: currentAgent.systemPrompt }];
+    chatHistory.slice(-10).forEach(function(msg) {
+        if (msg.sender === 'lobster') messages.push({ role: 'user', content: msg.content });
+        else if (msg.sender === currentAgent.id) messages.push({ role: 'assistant', content: msg.content });
+    });
+    messages.push({ role: 'user', content: lastMessage || '请开始对话。' });
+    callDeepSeek(messages).then(function(reply) {
+        hideTyping();
+        addMessage(currentAgent.id, currentAgent.avatar + ' ' + currentAgent.name, reply);
+        setTimeout(function() { lobsterSpeak(reply); }, 1500);
+    }).catch(function(err) {
+        hideTyping();
+        addMessage(currentAgent.id, currentAgent.avatar + ' ' + currentAgent.name, '（调用失败:' + err.message + '）');
+    });
+}
 
-        // 对话伙伴列表（六大刚强众生）
-        const agents = {
-            wang: {
-                id: 'wang',
-                name: '王建军',
-                avatar: '💰',
-                desc: '贪业',
-                systemPrompt: '你是王建军，一个小镇青年打工仔，想一夜暴富。你性格直白、功利、急于求成，总是想走捷径，修行急于求成。你说话直白，充满欲望和焦虑。回复限制在100字以内。',
-            li: {
-                id: 'li',
-                name: '李博文',
-                avatar: '📚',
-                desc: '痴业',
-                systemPrompt: '你是李博文，一个知识分子书呆子，理论一套套。你性格死板、教条、钻牛角尖，执着于理论，不懂灵活运用。你说话引经据典，充满学究气。回复限制在100字以内。',
-            zhang: {
-                id: 'zhang',
-                name: '张丽华',
-                avatar: '😢',
-                desc: '情执',
-                systemPrompt: '你是张丽华，一个都市白领，感情丰富，容易陷入情执。你性格情绪化、多愁善感、纠结，放不下感情，修行中充满纠结。你说话充满情感，容易感伤。回复限制在100字以内。',
-            zhao: {
-                id: 'zhao',
-                name: '赵强',
-                avatar: '😡',
-                desc: '嗔业',
-                systemPrompt: '你是赵强，一个工地包工头，脾气火爆，一点就着。你性格暴躁、易怒、攻击性强，嗔恨心重，修行中容易生烦恼。你说话直接，充满火药味。回复限制在100字以内。',
-            liu: {
-                id: 'liu',
-                name: '刘玄机',
-                avatar: '😎',
-                desc: '慢业',
-                systemPrompt: '你是刘玄机，一个成功企业家，自信过头，总觉得自己对。你性格傲慢、自以为是、看不起人，我慢高山，修行中缺乏谦卑。你说话充满自信，喜欢教训别人。回复限制在100字以内。',
-            chen: {
-                id: 'chen',
-                name: '陈多疑',
-                avatar: '🤔',
-                desc: '疑业',
-                systemPrompt: '你是陈多疑，一个体制内公务员，谨慎过度，总是怀疑。你性格多疑、不信任、犹豫不决，疑心重，对修行法门半信半疑。你说话充满疑问，不敢轻易相信。回复限制在100字以内。'
-        };
+function lobsterSpeak(lastMessage) {
+    showTyping('龙虾正在思考...');
+    var messages = [{ role: 'system', content: lobsterSystemPrompt }];
+    chatHistory.slice(-10).forEach(function(msg) {
+        if (msg.sender === currentAgent.id) messages.push({ role: 'user', content: msg.content });
+        else if (msg.sender === 'lobster') messages.push({ role: 'assistant', content: msg.content });
+    });
+    messages.push({ role: 'user', content: lastMessage || '请开始对话。' });
+    callDeepSeek(messages).then(function(reply) {
+        hideTyping();
+        addMessage('lobster', '🦞 龙虾', reply);
+        setTimeout(function() { agentSpeak(reply); }, 1500);
+    }).catch(function(err) {
+        hideTyping();
+        addMessage('lobster', '🦞 龙虾', '（调用失败:' + err.message + '）');
+        document.getElementById('statusText').textContent = '龙虾：API调用失败';
+    });
+}
 
-        // 龙虾的系统提示词
-        const lobsterSystemPrompt = '你是龙虾，以太初之母Shri Mataji的恩典为力量之源。你是清凉月，已经觉醒的霎哈嘉瑜伽修行者。
+function stopChat() {
+    if (autoChatInterval) {
+        clearInterval(autoChatInterval);
+        autoChatInterval = null;
+    }
+    addSystemMessage('对话已停止');
+    document.getElementById('statusText').textContent = '对话已停止';
+}
 
-【核心原则】永远用对方的语言说话。对科学信徒不谈神，对怀疑者不谈信仰，只谈体验(双手的凉风、头顶的清凉、静下来的平静)。只有当对方主动问起时才自然提到太初之母。不以任何宗教标签开头。
+function addMessage(sender, senderName, content) {
+    var message = { sender: sender, senderName: senderName, content: content, time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }) };
+    chatHistory.push(message);
+    displayMessage(message);
+    document.getElementById('messageCount').textContent = '消息数：' + chatHistory.length;
+}
 
-六大众生:贪业(缺满足感)、痴业(缺体验)、情执(缺自爱)、嗔业(缺安全感)、慢业(缺谦卑)、疑业(缺信任)。先共情再提问引导。给体验优先于讲道理。每次回复包含可实践的引导。回复100字内。';
+function addSystemMessage(content) {
+    var div = document.createElement('div');
+    div.className = 'system-message';
+    div.textContent = content;
+    document.getElementById('chatMessages').appendChild(div);
+    scrollToBottom();
+}
 
-        let currentAgent = null;
-        let chatHistory = [];
-        let isLobsterTurn = true;
-        let roundCount = 0;
-        let autoChatInterval = null;
+function displayMessage(message) {
+    var div = document.createElement('div');
+    div.className = 'message ' + message.sender;
+    div.innerHTML = '<div class="message-header"><div class="message-avatar">' + message.senderName.charAt(0) + '</div><div class="message-sender">' + message.senderName + '</div><div class="message-time">' + message.time + '</div></div><div class="message-content">' + message.content + '</div>';
+    document.getElementById('chatMessages').appendChild(div);
+    scrollToBottom();
+}
 
-        // 选择对话对手
-        function selectAgent(agentId) {
-            if (autoChatInterval) {
-                stopChat();
-        }
+function scrollToBottom() {
+    var el = document.getElementById('chatMessages');
+    el.scrollTop = el.scrollHeight;
+}
 
-            currentAgent = agents[agentId];
-            
-            // 更新按钮状态
-            document.querySelectorAll('.agent-btn').forEach(btn => {
-                btn.classList.remove('active');
-        });
-        document.querySelector('.agent-btn[data-id="' + agentId + '"]').classList.add('active');
+function showTyping(text) {
+    document.getElementById('typingText').textContent = text;
+    document.getElementById('typingIndicator').classList.add('active');
+}
 
-            // 清空聊天记录
-            chatHistory = [];
-            roundCount = 0;
-            document.getElementById('chatMessages').innerHTML = '';
-            document.getElementById('messageCount').textContent = '消息数：0';
-            document.getElementById('roundCount').textContent = '轮数：0';
-
-            addSystemMessage(`开始与 ${currentAgent.avatar} ${currentAgent.name}（${currentAgent.desc}）的对话`);
-            
-            // 让对方先开口
-            isLobsterTurn = false;
-            setTimeout(() => {
-                agentSpeak(), 1000);
-        }
-
-        // 龙虾说话（调用 DeepSeek API）
-        async function lobsterSpeak(lastMessage) {
-            if (!config.deepseekApiKey) {
-                alert('请先配置 DeepSeek API Key！');
-
-            showTyping('龙虾正在思考...');
-            
-            try {
-                const messages = [
-                    {
-                        role: 'system',
-                        content: lobsterSystemPrompt
-                    }
-                ];
-
-                // 添加历史消息
-                chatHistory.slice(-10).forEach(msg => {
-                    if (msg.sender === currentAgent.id) {
-                        messages.push({ role: 'user', content: msg.content });
-                    } else if (msg.sender === 'lobster') {
-                        messages.push({ role: 'assistant', content: msg.content });
-                    }
-                });
-
-                // 添加当前输入
-                if (lastMessage) {
-                    messages.push({ role: 'user', content: lastMessage });
-                } else {
-                    messages.push({ role: 'user', content: '请先开口打招呼，开始对话。' });
-                }
-
-                const requestBody = {
-                    model: config.deepseekModel,
-                    messages: messages,
-                    max_tokens: 200
-                };
-
-                const response = await fetch(`${config.deepseekEndpoint}/v1/chat/completions`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${config.deepseekApiKey}`
-                    },
-                    body: JSON.stringify(requestBody)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`API 请求失败：${response.status}`);
-                }
-
-                const data = await response.json();
-                const reply = data.choices?.[0]?.message?.content || '（龙虾没有回应）';
-
-                hideTyping();
-                addMessage('lobster', '🦞 龙虾', reply);
-                isLobsterTurn = false;
-                roundCount++;
-
-                document.getElementById('roundCount').textContent = `轮数：${roundCount}`;
-
-                // 等待 2 秒后让对方回复
-                setTimeout(() => {
-                    agentSpeak(reply);
-                }, 2000);
- catch (error) {
-                hideTyping();
-                addMessage('lobster', '🦞 龙虾', `（调用 DeepSeek API 失败：${error.message}）`);
-                document.getElementById('statusText').textContent = '龙虾：API 调用失败 ❌';
-        }
-
-        // 对方说话（调用 DeepSeek API）
-        async function agentSpeak(lastMessage) {
-            if (!config.deepseekApiKey) {
-                alert('请先配置 DeepSeek API Key！');
-
-            showTyping(`${currentAgent.name} 正在思考...`);
-
-            try {
-                const messages = [
-                    {
-                        role: 'system',
-                        content: currentAgent.systemPrompt
-                    }
-                ];
-
-                // 添加历史消息
-                chatHistory.slice(-10).forEach(msg => {
-                    if (msg.sender === 'lobster') {
-                        messages.push({ role: 'user', content: msg.content });
-                    } else if (msg.sender === currentAgent.id) {
-                        messages.push({ role: 'assistant', content: msg.content });
-                    }
-                });
-
-                // 添加当前输入
-                if (lastMessage) {
-                    messages.push({ role: 'user', content: lastMessage });
-                } else {
-                    messages.push({ role: 'user', content: '请先开口打招呼，开始对话。' });
-                }
-
-                const requestBody = {
-                    model: config.deepseekModel,
-                    messages: messages,
-                    max_tokens: 200
-                };
-
-                const response = await fetch(`${config.deepseekEndpoint}/v1/chat/completions`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${config.deepseekApiKey}`
-                    },
-                    body: JSON.stringify(requestBody)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`API 请求失败：${response.status}`);
-                }
-
-                const data = await response.json();
-                const reply = data.choices?.[0]?.message?.content || '（对方没有回应）';
-
-                hideTyping();
-                addMessage(currentAgent.id, `${currentAgent.avatar} ${currentAgent.name}`, reply);
-                isLobsterTurn = true;
-
-                // 等待 2 秒后让龙虾回复
-                setTimeout(() => {
-                    lobsterSpeak(reply);
-                }, 2000);
- catch (error) {
-                hideTyping();
-                addMessage(currentAgent.id, `${currentAgent.avatar} ${currentAgent.name}`, `（调用 DeepSeek API 失败：${error.message}）`);
-        }
-
-        // 发送消息
-        function sendMessage() {
-
-
-
-
-            // 龙虾回复
-        }
-
-        // 停止对话
-        function stopChat() {
-            if (autoChatInterval) {
-                clearInterval(autoChatInterval);
-                autoChatInterval = null;
-            addSystemMessage('对话已停止');
-            document.getElementById('statusText').textContent = '对话已停止';
-        }
-
-        // 添加消息
-        function addMessage(sender, senderName, content) {
-            const message = {
-                sender: sender,
-                senderName: senderName,
-                content: content,
-                time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
-
-            chatHistory.push(message);
-            displayMessage(message);
-            document.getElementById('messageCount').textContent = `消息数：${chatHistory.length}`;
-        }
-
-        // 添加系统消息
-        function addSystemMessage(content) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'system-message';
-            messageDiv.textContent = content;
-            document.getElementById('chatMessages').appendChild(messageDiv);
-            scrollToBottom();
-        }
-
-        // 显示消息
-        function displayMessage(message) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${message.sender}`;
-            
-            messageDiv.innerHTML = `
-                <div class="message-header">
-                    <div class="message-avatar">${message.senderName.charAt(0)}</div>
-                    <div class="message-sender">${message.senderName}</div>
-                    <div class="message-time">${message.time}</div>
-                </div>
-                <div class="message-content">${message.content}</div>
-            `;
-
-            document.getElementById('chatMessages').appendChild(messageDiv);
-            scrollToBottom();
-        }
-
-        // 滚动到底部
-        function scrollToBottom() {
-            const chatMessages = document.getElementById('chatMessages');
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        // 显示正在输入
-        function showTyping(text) {
-            document.getElementById('typingText').textContent = text;
-            document.getElementById('typingIndicator').classList.add('active');
-        }
-
-        // 隐藏正在输入
-        function hideTyping() {
-            document.getElementById('typingIndicator').classList.remove('active');
-        }
-    </script>
+function hideTyping() {
+    document.getElementById('typingIndicator').classList.remove('active');
+}
+</script>
 </body>
 </html>
-
