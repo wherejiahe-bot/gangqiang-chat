@@ -294,8 +294,8 @@
     <script>
         // 配置
         let config = {
-            openclawEndpoint: 'http://192.144.156.234:18789/api/v1/chat',
-            openclawToken: '8e6bcf1a3f5fb2578d39e165741ad6f6fb20df9aa0966834',
+            
+            
             deepseekApiKey: 'sk-241ded575a584e2cb842c9d5ff8cb6b7',
             deepseekEndpoint: 'https://api.deepseek.com',
             deepseekModel: 'deepseek-v4-flash'
@@ -386,27 +386,50 @@
             }, 1000);
         }
 
-        // 龙虾说话（调用 OpenClaw Gateway）
+        // 龙虾说话（调用 DeepSeek API）
         async function lobsterSpeak(lastMessage) {
-            if (!config.openclawEndpoint) {
-                alert('请先配置 OpenClaw Gateway 地址！');
+            if (!config.deepseekApiKey) {
+                alert('请先配置 DeepSeek API Key！');
                 return;
             }
 
             showTyping('龙虾正在思考...');
             
             try {
+                const messages = [
+                    {
+                        role: 'system',
+                        content: lobsterSystemPrompt
+                    }
+                ];
+
+                // 添加历史消息
+                chatHistory.slice(-10).forEach(msg => {
+                    if (msg.sender === currentAgent.id) {
+                        messages.push({ role: 'user', content: msg.content });
+                    } else if (msg.sender === 'lobster') {
+                        messages.push({ role: 'assistant', content: msg.content });
+                    }
+                });
+
+                // 添加当前输入
+                if (lastMessage) {
+                    messages.push({ role: 'user', content: lastMessage });
+                } else {
+                    messages.push({ role: 'user', content: '请先开口打招呼，开始对话。' });
+                }
+
                 const requestBody = {
-                    message: lastMessage || '请先开口打招呼，开始对话。',
-                    model: 'claude-sonnet-4-20250514',
-                    conversationId: 'gangqiang-' + Date.now()
+                    model: config.deepseekModel,
+                    messages: messages,
+                    max_tokens: 200
                 };
 
-                const response = await fetch(config.openclawEndpoint, {
+                const response = await fetch(`${config.deepseekEndpoint}/v1/chat/completions`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${config.openclawToken}`
+                        'Authorization': `Bearer ${config.deepseekApiKey}`
                     },
                     body: JSON.stringify(requestBody)
                 });
@@ -416,7 +439,7 @@
                 }
 
                 const data = await response.json();
-                const reply = data.response || data.message || data.reply || '（龙虾没有回应）';
+                const reply = data.choices?.[0]?.message?.content || '（龙虾没有回应）';
 
                 hideTyping();
                 addMessage('lobster', '🦞 龙虾', reply);
@@ -432,7 +455,7 @@
 
             } catch (error) {
                 hideTyping();
-                addMessage('lobster', '🦞 龙虾', `（调用 OpenClaw Gateway 失败：${error.message}）`);
+                addMessage('lobster', '🦞 龙虾', `（调用 DeepSeek API 失败：${error.message}）`);
                 document.getElementById('statusText').textContent = '龙虾：API 调用失败 ❌';
             }
         }
