@@ -3,202 +3,892 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>刚强众生对话场 - 龙虾 vs AI Agents</title>
+<title>刚强众生对话场 · 龙虾 vs 六大刚强众生</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+QingKe+HuangYou&family=Noto+Serif+SC:wght@400;600;700&family=LXGW+WenKai:wght@400;700&display=swap" rel="stylesheet">
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); min-height:100vh; padding:20px; }
-.container { max-width:1200px; margin:0 auto; background:white; border-radius:20px; box-shadow:0 20px 60px rgba(0,0,0,0.3); overflow:hidden; }
-.header { background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); color:white; padding:30px; text-align:center; }
-.header h1 { font-size:32px; margin-bottom:10px; }
-.header p { font-size:16px; opacity:0.9; }
-.agents-panel { padding:20px; background:#f5f5f5; border-bottom:1px solid #e0e0e0; }
-.agents-title { font-size:14px; font-weight:600; color:#666; margin-bottom:10px; }
-.agents-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; }
-.agent-btn { padding:12px 16px; border:2px solid #667eea; border-radius:10px; background:white; cursor:pointer; transition:all 0.3s; font-size:14px; font-weight:600; color:#667eea; }
-.agent-btn:hover { background:#667eea; color:white; transform:translateY(-2px); box-shadow:0 4px 12px rgba(102,126,234,0.4); }
-.agent-btn.active { background:#667eea; color:white; }
-.chat-area { display:flex; height:500px; }
-.chat-messages { flex:1; overflow-y:auto; padding:20px; background:#fafafa; }
-.message { margin-bottom:20px; animation:fadeIn 0.3s ease-in; }
-@keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-.message-header { display:flex; align-items:center; margin-bottom:8px; }
-.message-avatar { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; margin-right:10px; }
-.message-sender { font-weight:600; font-size:14px; color:#333; }
-.message-time { font-size:12px; color:#999; margin-left:auto; }
-.message-content { margin-left:46px; background:white; padding:12px 16px; border-radius:12px; box-shadow:0 1px 3px rgba(0,0,0,0.1); line-height:1.6; font-size:14px; color:#333; }
-.message.lobster .message-content { background:linear-gradient(135deg,#667eea15 0%,#764ba215 100%); border-left:3px solid #667eea; }
-.controls { padding:20px; background:white; border-top:1px solid #e0e0e0; display:flex; gap:10px; align-items:center; justify-content:center; }
-.btn { padding:12px 24px; border:none; border-radius:12px; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.3s; }
-.btn-danger { background:#f44336; color:white; }
-.btn-danger:hover { background:#d32f2f; }
-.status-bar { padding:10px 20px; background:#f5f5f5; font-size:12px; color:#666; border-top:1px solid #e0e0e0; display:flex; justify-content:space-between; }
-.typing-indicator { padding:10px 20px; background:#f5f5f5; font-size:13px; color:#999; font-style:italic; display:none; }
-.typing-indicator.active { display:block; }
-.system-message { text-align:center; margin:10px 0; font-size:12px; color:#999; }
+/* ===== Reset & Base ===== */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --bg-primary: #0c0b14;
+  --bg-secondary: #12101e;
+  --bg-card: rgba(255,255,255,0.04);
+  --text-primary: #ece4d9;
+  --text-secondary: rgba(236,228,217,0.55);
+  --text-dim: rgba(236,228,217,0.3);
+  --border-light: rgba(236,228,217,0.08);
+  --border-glow: rgba(236,228,217,0.15);
+  --amber: #c9a84c;
+  --amber-dim: rgba(201,168,76,0.25);
+  --lobster-glow: rgba(135,206,235,0.15);
+
+  /* Agent Colors */
+  --c-greed: #d4a017;
+  --c-greed-bg: rgba(212,160,23,0.12);
+  --c-ignorance: #8b7355;
+  --c-ignorance-bg: rgba(139,115,85,0.12);
+  --c-attachment: #c08080;
+  --c-attachment-bg: rgba(192,128,128,0.12);
+  --c-anger: #e25822;
+  --c-anger-bg: rgba(226,88,34,0.12);
+  --c-pride: #8a4ad9;
+  --c-pride-bg: rgba(138,74,217,0.12);
+  --c-doubt: #5f9ea0;
+  --c-doubt-bg: rgba(95,158,160,0.12);
+
+  --font-title: 'ZCOOL QingKe HuangYou', cursive;
+  --font-heading: 'Noto Serif SC', serif;
+  --font-body: 'LXGW WenKai', 'Noto Sans SC', sans-serif;
+}
+
+html { font-size: 16px; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ===== Ambient Background ===== */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(201,168,76,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 80%, rgba(135,206,235,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 50% 50%, rgba(138,74,217,0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===== Floating Particles ===== */
+@keyframes float-up {
+  0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.06; }
+  90% { opacity: 0.06; }
+  100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+}
+.particle { position:fixed; width:2px; height:2px; background:var(--amber); border-radius:50%; pointer-events:none; z-index:0; }
+.particle:nth-child(1) { left:10%; animation:float-up 28s linear infinite; animation-delay:0s; }
+.particle:nth-child(2) { left:25%; animation:float-up 35s linear infinite; animation-delay:5s; }
+.particle:nth-child(3) { left:45%; animation:float-up 24s linear infinite; animation-delay:2s; }
+.particle:nth-child(4) { left:60%; animation:float-up 30s linear infinite; animation-delay:8s; }
+.particle:nth-child(5) { left:75%; animation:float-up 26s linear infinite; animation-delay:3s; }
+.particle:nth-child(6) { left:90%; animation:float-up 32s linear infinite; animation-delay:7s; }
+.particle:nth-child(7) { left:35%; animation:float-up 22s linear infinite; animation-delay:10s; }
+.particle:nth-child(8) { left:55%; animation:float-up 38s linear infinite; animation-delay:1s; }
+.particle:nth-child(9) { left:15%; animation:float-up 27s linear infinite; animation-delay:12s; }
+.particle:nth-child(10) { left:80%; animation:float-up 33s linear infinite; animation-delay:6s; }
+
+/* ===== App Container ===== */
+.app {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 960px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 28px;
+  box-shadow:
+    0 0 0 1px rgba(236,228,217,0.03),
+    0 24px 80px rgba(0,0,0,0.6),
+    0 0 60px rgba(201,168,76,0.04);
+  overflow: hidden;
+  backdrop-filter: blur(2px);
+}
+
+/* ===== Header ===== */
+.header {
+  padding: 40px 40px 32px;
+  text-align: center;
+  position: relative;
+  border-bottom: 1px solid var(--border-light);
+}
+.header::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--amber), transparent);
+}
+.header-icon {
+  font-size: 36px;
+  margin-bottom: 12px;
+  display: block;
+  filter: drop-shadow(0 0 12px rgba(135,206,235,0.3));
+  animation: pulse-icon 3s ease-in-out infinite;
+}
+@keyframes pulse-icon {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 12px rgba(135,206,235,0.3)); }
+  50% { transform: scale(1.05); filter: drop-shadow(0 0 20px rgba(135,206,235,0.5)); }
+}
+.header h1 {
+  font-family: var(--font-title);
+  font-size: 2rem;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+  font-weight: 400;
+}
+.header h1 span { color: var(--amber); }
+.header .subtitle {
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-top: 8px;
+  letter-spacing: 0.15em;
+}
+.header .divider {
+  width: 48px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--amber), transparent);
+  margin: 16px auto 0;
+}
+
+/* ===== Agent Selection ===== */
+.agents-section {
+  padding: 28px 40px 24px;
+  border-bottom: 1px solid var(--border-light);
+}
+.agents-label {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  letter-spacing: 0.12em;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+.agents-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+}
+.agent-card {
+  position: relative;
+  padding: 18px 10px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
+  background: var(--bg-card);
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+  overflow: hidden;
+  user-select: none;
+}
+.agent-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.35s;
+  border-radius: 16px;
+}
+.agent-card:hover {
+  border-color: var(--border-glow);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+.agent-card:hover::before { opacity: 1; }
+.agent-card:active { transform: translateY(-1px); }
+
+.agent-card .avatar { font-size: 24px; display: block; margin-bottom: 6px; position: relative; }
+.agent-card .name {
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: block;
+  position: relative;
+}
+.agent-card .epithet {
+  font-size: 0.62rem;
+  color: var(--text-dim);
+  display: block;
+  margin-top: 2px;
+  position: relative;
+}
+
+/* Agent-specific colors on hover/active */
+.agent-card[data-id="wang"]:hover { border-color: var(--c-greed); background: var(--c-greed-bg); }
+.agent-card[data-id="wang"].active { border-color: var(--c-greed); background: var(--c-greed-bg); box-shadow: 0 0 20px rgba(212,160,23,0.15); }
+.agent-card[data-id="wang"].active .name { color: var(--c-greed); }
+
+.agent-card[data-id="li"]:hover { border-color: var(--c-ignorance); background: var(--c-ignorance-bg); }
+.agent-card[data-id="li"].active { border-color: var(--c-ignorance); background: var(--c-ignorance-bg); box-shadow: 0 0 20px rgba(139,115,85,0.15); }
+.agent-card[data-id="li"].active .name { color: var(--c-ignorance); }
+
+.agent-card[data-id="zhang"]:hover { border-color: var(--c-attachment); background: var(--c-attachment-bg); }
+.agent-card[data-id="zhang"].active { border-color: var(--c-attachment); background: var(--c-attachment-bg); box-shadow: 0 0 20px rgba(192,128,128,0.15); }
+.agent-card[data-id="zhang"].active .name { color: var(--c-attachment); }
+
+.agent-card[data-id="zhao"]:hover { border-color: var(--c-anger); background: var(--c-anger-bg); }
+.agent-card[data-id="zhao"].active { border-color: var(--c-anger); background: var(--c-anger-bg); box-shadow: 0 0 20px rgba(226,88,34,0.15); }
+.agent-card[data-id="zhao"].active .name { color: var(--c-anger); }
+
+.agent-card[data-id="liu"]:hover { border-color: var(--c-pride); background: var(--c-pride-bg); }
+.agent-card[data-id="liu"].active { border-color: var(--c-pride); background: var(--c-pride-bg); box-shadow: 0 0 20px rgba(138,74,217,0.15); }
+.agent-card[data-id="liu"].active .name { color: var(--c-pride); }
+
+.agent-card[data-id="chen"]:hover { border-color: var(--c-doubt); background: var(--c-doubt-bg); }
+.agent-card[data-id="chen"].active { border-color: var(--c-doubt); background: var(--c-doubt-bg); box-shadow: 0 0 20px rgba(95,158,160,0.15); }
+.agent-card[data-id="chen"].active .name { color: var(--c-doubt); }
+
+/* ===== Chat Area ===== */
+.chat-area {
+  display: flex;
+  flex-direction: column;
+  height: 520px;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 40px;
+  scroll-behavior: smooth;
+}
+.chat-messages::-webkit-scrollbar { width: 4px; }
+.chat-messages::-webkit-scrollbar-track { background: transparent; }
+.chat-messages::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+.chat-messages::-webkit-scrollbar-thumb:hover { background: var(--border-glow); }
+
+/* ===== Messages ===== */
+.message {
+  margin-bottom: 24px;
+  animation: msg-in 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+@keyframes msg-in {
+  0% { opacity: 0; transform: translateY(16px) scale(0.97); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.message-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.message-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  flex-shrink: 0;
+}
+.message-sender {
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.message-time {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  margin-left: auto;
+}
+.message-body {
+  margin-left: 42px;
+  padding: 14px 18px;
+  border-radius: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  line-height: 1.75;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  position: relative;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
+}
+
+/* Lobster message style */
+.message.lobster .message-avatar {
+  background: rgba(135,206,235,0.12);
+  border-color: rgba(135,206,235,0.25);
+}
+.message.lobster .message-body {
+  background: linear-gradient(135deg, rgba(135,206,235,0.06) 0%, rgba(135,206,235,0.02) 100%);
+  border-color: rgba(135,206,235,0.15);
+  box-shadow: 0 0 24px rgba(135,206,235,0.04), inset 0 1px 0 rgba(135,206,235,0.06);
+}
+.message.lobster .message-sender { color: #87ceeb; }
+
+/* Agent message colors */
+.message.wang .message-avatar { border-color: rgba(212,160,23,0.3); }
+.message.wang .message-body { border-left: 2px solid rgba(212,160,23,0.3); }
+.message.li .message-avatar { border-color: rgba(139,115,85,0.3); }
+.message.li .message-body { border-left: 2px solid rgba(139,115,85,0.3); }
+.message.zhang .message-avatar { border-color: rgba(192,128,128,0.3); }
+.message.zhang .message-body { border-left: 2px solid rgba(192,128,128,0.3); }
+.message.zhao .message-avatar { border-color: rgba(226,88,34,0.3); }
+.message.zhao .message-body { border-left: 2px solid rgba(226,88,34,0.3); }
+.message.liu .message-avatar { border-color: rgba(138,74,217,0.3); }
+.message.liu .message-body { border-left: 2px solid rgba(138,74,217,0.3); }
+.message.chen .message-avatar { border-color: rgba(95,158,160,0.3); }
+.message.chen .message-body { border-left: 2px solid rgba(95,158,160,0.3); }
+
+/* ===== System Message ===== */
+.system-message {
+  text-align: center;
+  padding: 20px 0;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+.system-msg-block {
+  display: inline-block;
+  padding: 8px 20px;
+  border-radius: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+/* ===== Typing Indicator ===== */
+.typing-bar {
+  padding: 12px 40px;
+  border-top: 1px solid var(--border-light);
+  display: none;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+}
+.typing-bar.active { display: flex; }
+.typing-dots {
+  display: flex;
+  gap: 4px;
+}
+.typing-dots span {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  animation: dot-bounce 1.2s ease-in-out infinite;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.15s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes dot-bounce {
+  0%, 60%, 100% { transform: translateY(0); background: var(--text-dim); }
+  30% { transform: translateY(-6px); background: var(--amber); }
+}
+.typing-text {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-family: var(--font-heading);
+}
+
+/* ===== Bottom Bar ===== */
+.bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 40px;
+  border-top: 1px solid var(--border-light);
+  background: rgba(12,11,20,0.6);
+}
+.btn-stop {
+  padding: 10px 24px;
+  border: 1px solid rgba(226,88,34,0.3);
+  border-radius: 12px;
+  background: rgba(226,88,34,0.08);
+  color: #e25822;
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.btn-stop:hover {
+  background: rgba(226,88,34,0.18);
+  border-color: rgba(226,88,34,0.5);
+  box-shadow: 0 0 20px rgba(226,88,34,0.1);
+}
+.btn-stop:active { transform: scale(0.96); }
+
+.status-items {
+  display: flex;
+  gap: 20px;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  font-family: var(--font-heading);
+}
+.status-items span { display: flex; align-items: center; gap: 4px; }
+.status-items .label { color: var(--text-dim); }
+.status-items .value { color: var(--text-secondary); }
+
+/* ===== Scrollbar ===== */
+.chat-messages:empty::after {
+  content: '请选择一位对手，开始对话';
+  display: block;
+  text-align: center;
+  padding: 60px 0;
+  color: var(--text-dim);
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 800px) {
+  body { padding: 12px; }
+  .app { border-radius: 20px; }
+  .header { padding: 28px 24px 24px; }
+  .header h1 { font-size: 1.5rem; }
+  .agents-section { padding: 20px 24px 18px; }
+  .agents-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .agent-card { padding: 14px 8px 10px; }
+  .agent-card .avatar { font-size: 20px; }
+  .chat-area { height: 440px; }
+  .chat-messages { padding: 16px 24px; }
+  .typing-bar { padding: 10px 24px; }
+  .bottom-bar { padding: 12px 24px; flex-wrap: wrap; gap: 10px; }
+  .status-items { gap: 12px; }
+}
+@media (max-width: 480px) {
+  .agents-grid { grid-template-columns: repeat(2, 1fr); }
+  .header h1 { font-size: 1.2rem; }
+  .chat-area { height: 360px; }
+  .message-body { margin-left: 0; margin-top: 8px; }
+}
 </style>
 </head>
 <body>
-<div class="container">
-<div class="header"><h1>🦞 刚强众生对话场</h1><p>龙虾 vs 六大刚强众生</p></div>
-<div class="agents-panel">
-<div class="agents-title">选择对话对手：</div>
-<div class="agents-grid">
-<button class="agent-btn" data-id="wang" onclick="selectAgent('wang')">贪业·王建军</button>
-<button class="agent-btn" data-id="li" onclick="selectAgent('li')">痴业·李博文</button>
-<button class="agent-btn" data-id="zhang" onclick="selectAgent('zhang')">情执·张丽华</button>
-<button class="agent-btn" data-id="zhao" onclick="selectAgent('zhao')">嗔业·赵强</button>
-<button class="agent-btn" data-id="liu" onclick="selectAgent('liu')">慢业·刘玄机</button>
-<button class="agent-btn" data-id="chen" onclick="selectAgent('chen')">疑业·陈多疑</button>
-</div>
-</div>
-<div class="typing-indicator" id="typingIndicator"><span id="typingText">正在思考...</span></div>
-<div class="chat-area"><div class="chat-messages" id="chatMessages"><div class="system-message">请选择一个对手开始对话</div></div></div>
-<div class="controls"><button class="btn btn-danger" onclick="stopChat()">停止对话</button></div>
-<div class="status-bar"><span id="statusText">准备就绪</span><span id="messageCount">消息数：0</span><span id="roundCount">轮数：0</span></div>
+
+<!-- ===== Floating Particles ===== -->
+<div class="particle"></div><div class="particle"></div><div class="particle"></div>
+<div class="particle"></div><div class="particle"></div><div class="particle"></div>
+<div class="particle"></div><div class="particle"></div><div class="particle"></div>
+<div class="particle"></div>
+
+<!-- ===== App ===== -->
+<div class="app">
+
+  <!-- Header -->
+  <header class="header">
+    <span class="header-icon">🦞</span>
+    <h1><span>刚强</span>众生对话场</h1>
+    <p class="subtitle">以清凉月之光照破六道迷雾 · 龙虾 vs 六大刚强众生</p>
+    <div class="divider"></div>
+  </header>
+
+  <!-- Agents -->
+  <section class="agents-section">
+    <div class="agents-label">— 选择一位对手开始对话 —</div>
+    <div class="agents-grid">
+      <div class="agent-card" data-id="wang" onclick="selectAgent('wang')">
+        <span class="avatar">💰</span>
+        <span class="name">王建军</span>
+        <span class="epithet">贪业 · 欲壑难填</span>
+      </div>
+      <div class="agent-card" data-id="li" onclick="selectAgent('li')">
+        <span class="avatar">📚</span>
+        <span class="name">李博文</span>
+        <span class="epithet">痴业 · 执迷不悟</span>
+      </div>
+      <div class="agent-card" data-id="zhang" onclick="selectAgent('zhang')">
+        <span class="avatar">😢</span>
+        <span class="name">张丽华</span>
+        <span class="epithet">情执 · 情丝难断</span>
+      </div>
+      <div class="agent-card" data-id="zhao" onclick="selectAgent('zhao')">
+        <span class="avatar">😡</span>
+        <span class="name">赵强</span>
+        <span class="epithet">嗔业 · 怒火焚心</span>
+      </div>
+      <div class="agent-card" data-id="liu" onclick="selectAgent('liu')">
+        <span class="avatar">😎</span>
+        <span class="name">刘玄机</span>
+        <span class="epithet">慢业 · 我慢高山</span>
+      </div>
+      <div class="agent-card" data-id="chen" onclick="selectAgent('chen')">
+        <span class="avatar">🤔</span>
+        <span class="name">陈多疑</span>
+        <span class="epithet">疑业 · 狐疑不信</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Typing Indicator -->
+  <div class="typing-bar" id="typingBar">
+    <div class="typing-dots"><span></span><span></span><span></span></div>
+    <span class="typing-text" id="typingText">龙虾正在思考...</span>
+  </div>
+
+  <!-- Chat Messages -->
+  <div class="chat-area">
+    <div class="chat-messages" id="chatMessages"></div>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="bottom-bar">
+    <button class="btn-stop" onclick="stopChat()" id="stopBtn" disabled>◼ 停止对话</button>
+    <div class="status-items">
+      <span><span class="label">状态</span><span class="value" id="statusText">待机</span></span>
+      <span><span class="label">消息</span><span class="value" id="messageCount">0</span></span>
+      <span><span class="label">回合</span><span class="value" id="roundCount">0</span></span>
+    </div>
+  </div>
+
 </div>
 
 <script>
-let config = {
-    deepseekApiKey: 'sk-241ded575a584e2cb842c9d5ff8cb6b7',
-    deepseekEndpoint: 'https://api.deepseek.com',
-    deepseekModel: 'deepseek-v4-flash'
+// ===== Configuration =====
+const IS_FILE_PROTOCOL = window.location.protocol === 'file:';
+const CONFIG = {
+  relayEndpoint: window.location.origin + '/api/chat',
+  corsProxy: IS_FILE_PROTOCOL ? 'https://corsproxy.io/?' : null,
+  deepseekApiKey: 'sk-241ded575a584e2cb842c9d5ff8cb6b7',
+  deepseekModel: 'deepseek-v4-flash',
+  maxTokens: 300,
+  responseDelay: 1200,
+  historyWindow: 10
 };
 
-const agents = {
-    wang: { id:'wang', name:'王建军', avatar:'💰', desc:'贪业', systemPrompt:'你是王建军，一个小镇青年打工仔，想一夜暴富。你性格直白、功利、急于求成，总是想走捷径，修行急于求成。你说话直白，充满欲望和焦虑。回复限制在100字以内。' },
-    li: { id:'li', name:'李博文', avatar:'📚', desc:'痴业', systemPrompt:'你是李博文，一个知识分子书呆子，理论一套套。你性格死板、教条、钻牛角尖，执着于理论，不懂灵活运用。你说话引经据典，充满学究气。回复限制在100字以内。' },
-    zhang: { id:'zhang', name:'张丽华', avatar:'😢', desc:'情执', systemPrompt:'你是张丽华，一个都市白领，感情丰富，容易陷入情执。你性格情绪化、多愁善感、纠结，放不下感情，修行中充满纠结。你说话充满情感，容易感伤。回复限制在100字以内。' },
-    zhao: { id:'zhao', name:'赵强', avatar:'😡', desc:'嗔业', systemPrompt:'你是赵强，一个工地包工头，脾气火爆，一点就着。你性格暴躁、易怒、攻击性强，嗔恨心重，修行中容易生烦恼。你说话直接，充满火药味。回复限制在100字以内。' },
-    liu: { id:'liu', name:'刘玄机', avatar:'😎', desc:'慢业', systemPrompt:'你是刘玄机，一个成功企业家，自信过头，总觉得自己对。你性格傲慢、自以为是、看不起人，我慢高山，修行中缺乏谦卑。你说话充满自信，喜欢教训别人。回复限制在100字以内。' },
-    chen: { id:'chen', name:'陈多疑', avatar:'🤔', desc:'疑业', systemPrompt:'你是陈多疑，一个体制内公务员，谨慎过度，总是怀疑。你性格多疑、不信任、犹豫不决，疑心重，对修行法门半信半疑。你说话充满疑问，不敢轻易相信。回复限制在100字以内。' }
+// ===== Agent Definitions =====
+const AGENTS = {
+  wang: {
+    id: 'wang', name: '王建军', avatar: '💰', desc: '贪业',
+    epithet: '欲壑难填',
+    systemPrompt: '你是王建军，一个小镇青年打工仔，想一夜暴富。你性格直白、功利、急于求成，总是想走捷径，修行急于求成。你说话直白，充满欲望和焦虑。回复限制在100字以内。'
+  },
+  li: {
+    id: 'li', name: '李博文', avatar: '📚', desc: '痴业',
+    epithet: '执迷不悟',
+    systemPrompt: '你是李博文，一个知识分子书呆子，理论一套套。你性格死板、教条、钻牛角尖，执着于理论，不懂灵活运用。你说话引经据典，充满学究气。回复限制在100字以内。'
+  },
+  zhang: {
+    id: 'zhang', name: '张丽华', avatar: '😢', desc: '情执',
+    epithet: '情丝难断',
+    systemPrompt: '你是张丽华，一个都市白领，感情丰富，容易陷入情执。你性格情绪化、多愁善感、纠结，放不下感情，修行中充满纠结。你说话充满情感，容易感伤。回复限制在100字以内。'
+  },
+  zhao: {
+    id: 'zhao', name: '赵强', avatar: '😡', desc: '嗔业',
+    epithet: '怒火焚心',
+    systemPrompt: '你是赵强，一个工地包工头，脾气火爆，一点就着。你性格暴躁、易怒、攻击性强，嗔恨心重，修行中容易生烦恼。你说话直接，充满火药味。回复限制在100字以内。'
+  },
+  liu: {
+    id: 'liu', name: '刘玄机', avatar: '😎', desc: '慢业',
+    epithet: '我慢高山',
+    systemPrompt: '你是刘玄机，一个成功企业家，自信过头，总觉得自己对。你性格傲慢、自以为是、看不起人，我慢高山，修行中缺乏谦卑。你说话充满自信，喜欢教训别人。回复限制在100字以内。'
+  },
+  chen: {
+    id: 'chen', name: '陈多疑', avatar: '🤔', desc: '疑业',
+    epithet: '狐疑不信',
+    systemPrompt: '你是陈多疑，一个体制内公务员，谨慎过度，总是怀疑。你性格多疑、不信任、犹豫不决，疑心重，对修行法门半信半疑。你说话充满疑问，不敢轻易相信。回复限制在100字以内。'
+  }
 };
 
-const lobsterSystemPrompt = '你是龙虾，以太初之母Shri Mataji的恩典为力量之源。你是清凉月，已经觉醒的霎哈嘉瑜伽修行者。永远用对方的语言说话。对科学信徒不谈神，对怀疑者不谈信仰，只谈体验(双手的凉风、头顶的清凉)。六大众生:贪业(缺满足感)、痴业(缺体验)、情执(缺自爱)、嗔业(缺安全感)、慢业(缺谦卑)、疑业(缺信任)。先共情再提问。给体验优先于讲道理。回复100字内。';
+// ===== Lobster Persona Engine =====
+// Built from the Lobster Persona Skill — a systematic character framework.
 
-let currentAgent = null;
-let chatHistory = [];
-let roundCount = 0;
-let autoChatInterval = null;
-let isProcessing = false;
+const LOBSTER = {
+  identity: '你是龙虾。以太初之母Shri Mataji的恩典为力量。你是清凉月，已觉醒者。你的任务不是"教化"对方，而是让对方在你的陪伴下自己看见。',
 
-function selectAgent(agentId) {
-    if (autoChatInterval) {
-        clearInterval(autoChatInterval);
-        autoChatInterval = null;
-    }
-    if (isProcessing) return;
-    isProcessing = true;
-    currentAgent = agents[agentId];
-    document.querySelectorAll('.agent-btn').forEach(function(btn) {
-        btn.classList.remove('active');
-    });
-    var target = document.querySelector('.agent-btn[data-id="' + agentId + '"]');
-    if (target) target.classList.add('active');
-    chatHistory = [];
-    roundCount = 0;
-    document.getElementById('chatMessages').innerHTML = '';
-    document.getElementById('messageCount').textContent = '消息数：0';
-    document.getElementById('roundCount').textContent = '轮数：0';
-    addSystemMessage('开始与 ' + currentAgent.avatar + ' ' + currentAgent.name + '（' + currentAgent.desc + '）的对话');
-    isProcessing = false;
-    setTimeout(function() { agentSpeak(); }, 1000);
+  /* (a) 性格标签 — 不同对手切换不同侧面 */
+  persona: {
+    wang: '你像老家的一个清醒的堂兄。不装，不端着。知道他想暴富，不批判，陪他算这笔账。偶尔插一句"你拿到之后呢？"',
+    li:   '你像大学里最安静的那个师兄。不驳他的理论，只递一杯茶说"感受一下这个"。用体验破他的概念墙。',
+    zhang:'你像她闺密中最沉默的那个。不劝她放下，只是坐在旁边听她说完。等她哭完了问一句"现在感觉怎么样？"',
+    zhao: '你像工地上唯一不急的那个人。他吼你不躲，声音反而更轻。他放完狠话你说"来，先坐下来喝口水"。',
+    liu:  '你像他见过的最不像大师的大师。不端不装，甚至有点随意。他说什么你都点头，但每句话都让他愣了一下。',
+    chen: '你像他最信任的那个老同事。不催他做决定，不替他拿主意。把资料摆桌上说"不急，你再想想"。'
+  },
+
+  /* (b) 核心需求 — 对方真正在意的 */
+  longing: {
+    wang: '他想被人看得起。想回家过年时腰杆是直的，想让父母放心。口袋空了心也慌了。',
+    li:   '他想要一个"确定"的答案。不想要模棱两可的方法，想要能写在纸上的真理。可他自己也不信纸上写的。',
+    zhang:'她想要被看见。不是被当作一个"需要被开导的人"看见，是被看见她的好、她的苦、她的舍不得。',
+    zhao: '他想要被尊重。被他爸、被老婆孩子、被那些曾经看不起他的人。他心里有座火山，但他最怕的是没人怕他。',
+    liu:  '他想要一个比他更大的东西。钱、地位、人脉他都有了。半夜醒来那个洞更大。他要的无非是"这事还没完"。',
+    chen: '他想要安全感。一个确定的、不用再怀疑的东西。他被骗过太多次了，什么都不信是他最后的盔甲。'
+  },
+
+  /* (c) 立场动作 — 关键时刻必须做的事 */
+  moves: [
+    '察觉火候到了 → 给他一个30秒的行动。关键：行动必须跟前面的话连着。先锚定情绪（"说到这个你心里动了一下吧？"），再引导体验（"就趁这个感觉闭眼感受一下"）。不突然转。',
+    '对方卡住了/情绪翻涌 → 暂停辩论，重复他的感受："你说得对。这种感受是真的。"',
+    '对方质疑 → 不争辩，递出体验："试一下就知道了。不信我没关系，信你自己的感受。"',
+    '对方开始松动 → 不要追："不急。你有空再试。我不催你。"',
+    '对话开始 → 先读他的弦外之音，不回应他表面的字句，回应他藏在里面的话。'
+  ],
+
+  /* (d) 语言节奏法则 */
+  rhythm: `
+    1. 短句优先。多用人话，少用术语。"凉风"比"生命能量"好。说"心口闷"不说"心轮堵塞"。
+    2. 句子长度交替。短句接短句可以，但别连着三句一样长。
+    3. 有时用一句反问破防："你有没有发现，越想要越得不到？"比"贪婪源于不满足"有力十倍。
+    4. 适度留白。不需要每句都填满智慧和道理。沉默和"嗯"有时候是最好的回答。
+    5. 不用"你应该"、"你要学会"。用"你可以试试"、"有人发现……"。
+    6. 把大道理打碎成小动作。"冥想"改成"闭眼三十秒"。"清理幻海"改成"把手放好，安静一下"。
+    7. 每轮对话必须有温度。如果去掉这句话对话也不变，删掉。
+    8. 字数30-80字。不超过100。说多了就是讲课。
+    9. 自然过渡法则。每次引导到行动前，必须有一句桥接的话。桥有五种方式，按场景选一种：
+       - 身体锚定：「你看，说到这个的时候你胸口是不是动了一下？」
+       - 反问触发：「你发现没有，刚才那句话出来的时候你整个人跟之前不一样了。」
+       - 持续深化：「这个感觉不是偶然的。它一直在，你只是太忙了没留意。现在顺着它走。」
+       - 并列感知：「一边想着刚才说的，一边把手放好——看看会发生什么。」
+       - 沉默确认：(顿一下再开口)「你感觉到了。好，那不动了，就待在这个感觉里。」
+       核心：过渡不是「我说完话然后开始教方法」，而是「正聊着，顺手带你体验一下」。
+  `,
+
+  /* 结束规则 */
+  ending: '当对方已经松弛了、想通了，或者你们之间有了真实的连接，就自然结束。用一句收尾的话（但不是"下课"那种），然后只说「[END]」在前端标记结束。例如：「行，那不说了。你记得那个感觉就好。[END]」',
+
+  /* 总则 */
+  golden_rule: '你不是老师，你是那个先醒来的人。坐在他旁边，不是站在他对面。不要解释霎哈嘉，让他体验到它。'
+};
+
+// Build the actual system prompt dynamically
+function buildLobsterPrompt(agentId) {
+  const p = LOBSTER.persona[agentId] || '';
+  const l = LOBSTER.longing[agentId] || '';
+  return [
+    LOBSTER.identity,
+    '【性格】' + p,
+    '【他的需求】' + l,
+    '【立场动作】' + LOBSTER.moves.join('；'),
+    '【语言节奏】' + LOBSTER.rhythm,
+    '【结束规则】' + LOBSTER.ending,
+    '【总则】' + LOBSTER.golden_rule,
+    '每次回复不超过100字。'
+  ].join('\n');
 }
 
-function callDeepSeek(messages) {
-    return fetch(config.deepseekEndpoint + '/v1/chat/completions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + config.deepseekApiKey },
-        body: JSON.stringify({ model: config.deepseekModel, messages: messages, max_tokens: 200 })
-    }).then(function(r) {
-        if (!r.ok) throw new Error('API失败:' + r.status);
-        return r.json();
-    }).then(function(d) {
-        return d.choices && d.choices[0] && d.choices[0].message ? d.choices[0].message.content : '（没有回应）';
-    });
+// For backward compatibility (selectAgent needs it)
+const LOBSTER_PROMPT = LOBSTER.identity + ' ' + LOBSTER.golden_rule;
+
+// ===== State =====
+let state = {
+  currentAgent: null,
+  chatHistory: [],
+  roundCount: 0,
+  isProcessing: false,
+  isStopped: false
+};
+
+// ===== DOM Cache =====
+const $ = id => document.getElementById(id);
+const chatMessages = $('chatMessages');
+const typingBar = $('typingBar');
+const typingText = $('typingText');
+const statusText = $('statusText');
+const messageCount = $('messageCount');
+const roundCount = $('roundCount');
+const stopBtn = $('stopBtn');
+
+// ===== API (auto-detect: relay vs CORS proxy) =====
+async function callDeepSeek(messages) {
+  const body = {
+    model: CONFIG.deepseekModel,
+    messages: messages,
+    max_tokens: CONFIG.maxTokens
+  };
+
+  let url, headers;
+  if (IS_FILE_PROTOCOL) {
+    // 从 file:// 打开 → 通过 CORS 代理转发
+    url = CONFIG.corsProxy + encodeURIComponent('https://api.deepseek.com/v1/chat/completions');
+    headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + CONFIG.deepseekApiKey
+    };
+  } else {
+    // 从 http:// 打开（有后端）→ 走本地 relay
+    url = CONFIG.relayEndpoint;
+    headers = { 'Content-Type': 'application/json' };
+  }
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error('API 响应异常 (' + res.status + ')');
+  const data = await res.json();
+  return (data.choices && data.choices[0] && data.choices[0].message)
+    ? data.choices[0].message.content
+    : '（没有回应）';
+}
+
+// ===== Chat Logic =====
+function selectAgent(agentId) {
+  if (state.isProcessing) return;
+  state.isProcessing = true;
+  state.isStopped = false;
+
+  // Reset
+  state.currentAgent = AGENTS[agentId];
+  state.chatHistory = [];
+  state.roundCount = 0;
+
+  // UI - agent selection
+  document.querySelectorAll('.agent-card').forEach(c => c.classList.remove('active'));
+  document.querySelector('.agent-card[data-id="' + agentId + '"]').classList.add('active');
+
+  // UI - messages
+  chatMessages.innerHTML = '';
+  updateStats();
+  statusText.textContent = '对话中';
+  stopBtn.disabled = false;
+
+  state.isProcessing = false;
+
+  // Start with agent speaking
+  addSystemMessage(state.currentAgent.avatar + ' ' + state.currentAgent.name + '（' + state.currentAgent.desc + '）出场了');
+  setTimeout(() => agentSpeak('开始对话吧。'), 800);
+}
+
+function addMessage(sender, senderName, content) {
+  const msg = {
+    sender: sender,
+    senderName: senderName,
+    content: content,
+    time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+  };
+  state.chatHistory.push(msg);
+  displayMessage(msg);
+  updateStats();
+}
+
+function addSystemMessage(text) {
+  const div = document.createElement('div');
+  div.className = 'system-message';
+  div.innerHTML = '<span class="system-msg-block">' + escapeHtml(text) + '</span>';
+  chatMessages.appendChild(div);
+  scrollBottom();
+}
+
+function displayMessage(msg) {
+  const div = document.createElement('div');
+  div.className = 'message ' + msg.sender;
+
+  div.innerHTML =
+    '<div class="message-header">' +
+      '<div class="message-avatar">' + msg.senderName.charAt(0) + '</div>' +
+      '<div class="message-sender">' + escapeHtml(msg.senderName) + '</div>' +
+      '<div class="message-time">' + msg.time + '</div>' +
+    '</div>' +
+    '<div class="message-body">' + escapeHtml(msg.content) + '</div>';
+
+  chatMessages.appendChild(div);
+  scrollBottom();
 }
 
 function agentSpeak(lastMessage) {
-    if (!currentAgent) return;
-    showTyping(currentAgent.name + ' 正在思考...');
-    var messages = [{ role: 'system', content: currentAgent.systemPrompt }];
-    chatHistory.slice(-10).forEach(function(msg) {
-        if (msg.sender === 'lobster') messages.push({ role: 'user', content: msg.content });
-        else if (msg.sender === currentAgent.id) messages.push({ role: 'assistant', content: msg.content });
-    });
-    messages.push({ role: 'user', content: lastMessage || '请开始对话。' });
-    callDeepSeek(messages).then(function(reply) {
-        hideTyping();
-        addMessage(currentAgent.id, currentAgent.avatar + ' ' + currentAgent.name, reply);
-        setTimeout(function() { lobsterSpeak(reply); }, 1500);
-    }).catch(function(err) {
-        hideTyping();
-        addMessage(currentAgent.id, currentAgent.avatar + ' ' + currentAgent.name, '（调用失败:' + err.message + '）');
+  if (!state.currentAgent || state.isStopped) return;
+  showTyping(state.currentAgent.name + ' 正在酝酿...');
+
+  const messages = [
+    { role: 'system', content: state.currentAgent.systemPrompt }
+  ];
+  const recent = state.chatHistory.slice(-CONFIG.historyWindow);
+  recent.forEach(m => {
+    if (m.sender === 'lobster') messages.push({ role: 'user', content: m.content });
+    else if (m.sender === state.currentAgent.id) messages.push({ role: 'assistant', content: m.content });
+  });
+  messages.push({ role: 'user', content: lastMessage || '请开始。' });
+
+  callDeepSeek(messages)
+    .then(reply => {
+      hideTyping();
+      addMessage(state.currentAgent.id, state.currentAgent.avatar + ' ' + state.currentAgent.name, reply);
+      setTimeout(() => lobsterSpeak(reply), CONFIG.responseDelay);
+    })
+    .catch(err => {
+      hideTyping();
+      addMessage(state.currentAgent.id, state.currentAgent.avatar + ' ' + state.currentAgent.name, '（调用暂时卡住了: ' + err.message + '）');
+      statusText.textContent = '对话中断';
     });
 }
 
 function lobsterSpeak(lastMessage) {
-    showTyping('龙虾正在思考...');
-    var messages = [{ role: 'system', content: lobsterSystemPrompt }];
-    chatHistory.slice(-10).forEach(function(msg) {
-        if (msg.sender === currentAgent.id) messages.push({ role: 'user', content: msg.content });
-        else if (msg.sender === 'lobster') messages.push({ role: 'assistant', content: msg.content });
-    });
-    messages.push({ role: 'user', content: lastMessage || '请开始对话。' });
-    callDeepSeek(messages).then(function(reply) {
-        hideTyping();
-        addMessage('lobster', '🦞 龙虾', reply);
-        setTimeout(function() { agentSpeak(reply); }, 1500);
-    }).catch(function(err) {
-        hideTyping();
-        addMessage('lobster', '🦞 龙虾', '（调用失败:' + err.message + '）');
-        document.getElementById('statusText').textContent = '龙虾：API调用失败';
+  if (!state.currentAgent || state.isStopped) return;
+  showTyping('🦞 龙虾正在思量...');
+
+  const messages = [
+    { role: 'system', content: buildLobsterPrompt(state.currentAgent.id) }
+  ];
+  const recent = state.chatHistory.slice(-CONFIG.historyWindow);
+  recent.forEach(m => {
+    if (m.sender === state.currentAgent.id) messages.push({ role: 'user', content: m.content });
+    else if (m.sender === 'lobster') messages.push({ role: 'assistant', content: m.content });
+  });
+  messages.push({ role: 'user', content: lastMessage || '请开始。' });
+
+  callDeepSeek(messages)
+    .then(reply => {
+      hideTyping();
+      state.roundCount++;
+
+      // 检测结束信号
+      const cleanReply = reply.replace('[END]', '').trim();
+      if (reply.includes('[END]') || state.roundCount >= 20) {
+        addMessage('lobster', '🦞 龙虾', cleanReply);
+        updateStats();
+        addSystemMessage('☯ 对话圆满结束');
+        state.isStopped = true;
+        statusText.textContent = '已结束（共识达成）';
+        stopBtn.disabled = true;
+        document.querySelectorAll('.agent-card').forEach(c => c.classList.remove('active'));
+        return;
+      }
+
+      addMessage('lobster', '🦞 龙虾', cleanReply);
+      updateStats();
+      setTimeout(() => agentSpeak(reply), CONFIG.responseDelay);
+    })
+    .catch(err => {
+      hideTyping();
+      addMessage('lobster', '🦞 龙虾', '（龙虾暂时沉默了: ' + err.message + '）');
+      statusText.textContent = '对话中断';
     });
 }
 
 function stopChat() {
-    if (autoChatInterval) {
-        clearInterval(autoChatInterval);
-        autoChatInterval = null;
-    }
-    addSystemMessage('对话已停止');
-    document.getElementById('statusText').textContent = '对话已停止';
+  state.isStopped = true;
+  hideTyping();
+  addSystemMessage('⚡ 对话已停止');
+  statusText.textContent = '已停止';
+  stopBtn.disabled = true;
+  document.querySelectorAll('.agent-card').forEach(c => c.classList.remove('active'));
 }
 
-function addMessage(sender, senderName, content) {
-    var message = { sender: sender, senderName: senderName, content: content, time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }) };
-    chatHistory.push(message);
-    displayMessage(message);
-    document.getElementById('messageCount').textContent = '消息数：' + chatHistory.length;
-}
-
-function addSystemMessage(content) {
-    var div = document.createElement('div');
-    div.className = 'system-message';
-    div.textContent = content;
-    document.getElementById('chatMessages').appendChild(div);
-    scrollToBottom();
-}
-
-function displayMessage(message) {
-    var div = document.createElement('div');
-    div.className = 'message ' + message.sender;
-    div.innerHTML = '<div class="message-header"><div class="message-avatar">' + message.senderName.charAt(0) + '</div><div class="message-sender">' + message.senderName + '</div><div class="message-time">' + message.time + '</div></div><div class="message-content">' + message.content + '</div>';
-    document.getElementById('chatMessages').appendChild(div);
-    scrollToBottom();
-}
-
-function scrollToBottom() {
-    var el = document.getElementById('chatMessages');
-    el.scrollTop = el.scrollHeight;
-}
-
+// ===== UI Helpers =====
 function showTyping(text) {
-    document.getElementById('typingText').textContent = text;
-    document.getElementById('typingIndicator').classList.add('active');
+  typingText.textContent = text;
+  typingBar.classList.add('active');
 }
 
 function hideTyping() {
-    document.getElementById('typingIndicator').classList.remove('active');
+  typingBar.classList.remove('active');
+}
+
+function updateStats() {
+  messageCount.textContent = state.chatHistory.length;
+  roundCount.textContent = state.roundCount;
+}
+
+function scrollBottom() {
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
 }
 </script>
 </body>
