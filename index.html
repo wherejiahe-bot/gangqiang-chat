@@ -705,10 +705,17 @@ async function callDeepSeek(messages) {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + CONFIG.deepseekApiKey
     };
-  } else {
-    // 从 http:// 打开（有后端）→ 走本地 relay
+  } else if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    // 本地服务模式 → 走 relay（需要本地启动 serve.py）
     url = CONFIG.relayEndpoint;
     headers = { 'Content-Type': 'application/json' };
+  } else {
+    // GitHub Pages / 线上模式 → 直接调 DeepSeek API（HTTPS 来源支持 CORS）
+    url = 'https://api.deepseek.com/v1/chat/completions';
+    headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + CONFIG.deepseekApiKey
+    };
   }
 
   const res = await fetch(url, {
