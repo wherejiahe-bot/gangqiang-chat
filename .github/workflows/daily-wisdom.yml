@@ -1,0 +1,23 @@
+name: Update Daily Wisdom
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-wisdom:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch today wisdom
+        run: |
+          MONTH=$(date +%-m)
+          DAY=$(date +%-d)
+          curl -s "https://amruta.today/wp-json/everyday-ui/v1/talks/lang/en/month/$MONTH/day/$DAY" -o wisdom/latest.json
+      - name: Commit and push
+        run: |
+          git config user.name 'daily-wisdom-bot'
+          git config user.email 'bot@users.noreply.github.com'
+          git add wisdom/latest.json
+          git diff --quiet && git diff --staged --quiet || git commit -m "chore: update daily wisdom ($(date +%Y-%m-%d))"
+          git push
