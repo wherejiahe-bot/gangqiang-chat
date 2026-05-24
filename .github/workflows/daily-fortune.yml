@@ -1,0 +1,23 @@
+name: Update Daily Fortune
+on:
+  schedule:
+    - cron: '5 0 * * *'
+  workflow_dispatch:
+jobs:
+  generate-fortune:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Generate fortune
+        run: node fortune/generate.js fortune/latest.json
+      - name: Commit and push
+        run: |
+          git config user.name 'fortune-bot'
+          git config user.email 'bot@users.noreply.github.com'
+          git add fortune/latest.json
+          git diff --quiet && git diff --staged --quiet || git commit -m "chore: update daily fortune ($(date +%Y-%m-%d))"
+          git push
